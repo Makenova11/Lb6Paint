@@ -16,7 +16,7 @@ namespace Lb6Paint
     public partial class Form1 : Form
     {
         // угол поворота
-        private int angle = 45;
+        private int angle = 0;
         public Form1()
         {
             InitializeComponent();
@@ -51,7 +51,7 @@ namespace Lb6Paint
         {
             Glut.glutInit();
             Glut.glutInitDisplayMode(Glut.GLUT_RGB | Glut.GLUT_DOUBLE | Glut.GLUT_DEPTH);
-            Gl.glClearColor(0, 255, 255, 1);
+            Gl.glClearColor(1, 1, 1, 1);
             // установка порта вывода в соответствии с размерами элемента anT
             Gl.glViewport(0, 0, AnT.Width, AnT.Height);
             // настройка проекции
@@ -68,7 +68,7 @@ namespace Lb6Paint
             Il.ilInit();
             Il.ilEnable(Il.IL_ORIGIN_SET);
 
-            string path = "C:\\Users\\aken\\Desktop\\cosmos";
+            
 
         }
 
@@ -117,73 +117,116 @@ namespace Lb6Paint
 
                 // Модель освещенности с одним источником цвета
                 float[] light_position = { 100, 0, 0, 0 }; // Координаты источника света
-                float[] lghtClr = { 1, 1, 1, 0 }; // Источник излучает белый цвет
-                float[] mtClr = { Color.R, Color.G, Color.B, 0 }; // Материал 
-                Gl.glPolygonMode(Gl.GL_FRONT, Gl.GL_FILL); // Заливка полигонов
-                Gl.glShadeModel(Gl.GL_SMOOTH); // Вывод с интерполяцией цветов
-                Gl.glEnable(Gl.GL_LIGHTING); // Будем рассчитывать освещенность
-                Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_POSITION, light_position);
-                Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_AMBIENT, lghtClr); // Рассеивание
-                Gl.glEnable(Gl.GL_LIGHT0); // Включаем в уравнение освещенности источник GL_LIGHT0
-                // Диффузионная компонента цвета материала
-                Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, mtClr);
-                // Выводим тонированный glut-примитив
-                showSolid();
-                Gl.glDisable(Gl.GL_LIGHTING); // Будем рассчитывать освещенность
+                float[] lghtClr = { Color.R, Color.G, Color.B, 1 }; // Источник излучает белый цвет 
+                float[] mtClr = { 1, 1, 1, 0 }; // Цвет излучения сферы на которую падает цвет
+
+                if (radioButton4.Checked)
+                {
+                    Gl.glPolygonMode(Gl.GL_FRONT, Gl.GL_FILL); // Заливка полигонов
+                    Gl.glShadeModel(Gl.GL_SMOOTH); // Вывод с интерполяцией цветов
+                    Gl.glEnable(Gl.GL_LIGHTING); // Будем рассчитывать освещенность
+                    Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_POSITION, light_position);
+                    Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_AMBIENT, lghtClr); // Рассеивание
+                    Gl.glEnable(Gl.GL_LIGHT0); // Включаем в уравнение освещенности источник GL_LIGHT0
+                    // Диффузионная компонента цвета материала
+                    Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, mtClr);
+                    // Выводим тонированный glut-примитив
+                    showSolid();
+                    Gl.glPopMatrix();
+                    Gl.glFlush();
+                    AnT.Invalidate();
+                    Gl.glDisable(Gl.GL_LIGHT0);
+                }
+                else if (radioButton5.Checked)
+                {
+                    Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
+                    //Gl.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+                    Gl.glLoadIdentity();
+                    Gl.glColor3f(Color.R, Color.G, Color.B);
+                    // масштаб
+                    Gl.glScalef(x_scale, y_scale, z_scale);
+                    Gl.glPushMatrix();
+                    Gl.glTranslated(0, 0, -6);
+                    // перемещаем камеру для более хорошего обзора объекта
+                    Gl.glTranslated(x_tr, y_tr, z_tr);
+                    Gl.glRotated(angle, 1, 1, 0);
+                    //// рисуем сферу с помощью библиотеки FreeGLUT
+                    //Glut.glutSolidSphere(0.7, 30, 30);
+
+                    float[] fogColor = new float[4] { 0.5f, 0.5f, 0.5f, 1.0f }; // Цвет тумана
+
+                    Gl.glEnable(Gl.GL_BLEND); // Включает туман (GL_FOG)
+                    Gl.glBlendFunc(Gl.GL_SRC_ALPHA, Gl.GL_ONE_MINUS_SRC_ALPHA);
+                    Gl.glEnable(Gl.GL_ALPHA_TEST);
+                    Gl.glColor3f(1, 1, 1);
+                    Glut.glutSolidSphere(3, 30, 30);
+                    Gl.glAlphaFunc(Gl.GL_GREATER, (float)0.3);
+                    Gl.glDisable(Gl.GL_BLEND);
+                    // Выводим тонированный glut-примитив
+
+                    Gl.glPopMatrix();
+                    Gl.glFlush();
+                    AnT.Invalidate();
+                }
+                
+                
 
                 Gl.glPopMatrix();
                 Gl.glFlush();
                 AnT.Invalidate();
+             
 
-               
+
             }
             else if (radioButton3.Checked)//texture
             {
+                if (textureIsLoad)
+                {
+                    Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
+                    Gl.glClearColor(1, 1, 1, 1);
+                    Gl.glLoadIdentity();
+                    
+                    Gl.glRotated(angle, 0, 0, 1);
 
-            }
-                //Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
-                //Gl.glLoadIdentity();
-                //Gl.glColor3f(Color.R, Color.G, Color.B);
-                //// масштаб
-                //Gl.glScalef(x_scale, y_scale, z_scale);
-                //Gl.glPushMatrix();
-                //Gl.glTranslated(0, 0, -6);
-                //// перемещаем камеру для более хорошего обзора объекта
-                //Gl.glTranslated(x_tr, y_tr, z_tr);
-                ////// включаем режим текстурирования
-                ////Gl.glEnable(Gl.GL_TEXTURE_2D);
+                    // масштаб
+                    Gl.glScalef(x_scale, y_scale, z_scale);
 
-                ////// включаем режим текстурирования, указывая идентификатор mGlTextureObject
-                ////Gl.glBindTexture(Gl.GL_TEXTURE_2D, mGlTextureObject);
+                    // установка белого цвета
+                    Gl.glColor3f(1, 1, 1);
 
-                //Gl.glRotated(angle, 1, 1, 0);
-                //// рисуем сферу с помощью библиотеки FreeGLUT
-                ////Glut.glutWireSphere(0.7, 30, 30);
-                //Glut.glutSolidSphere(0.7, 30, 30);
-                ////Glut.glutWireCylinder(1,2,50,1);
+                    // помещаем состояние матрицы в стек матриц
+                    Gl.glPushMatrix();
+
+                    // перемещаем камеру для более хорошего обзора объекта
+                    Gl.glTranslated(x_tr, y_tr, z_tr);
+                    Gl.glRotated(angle, 1, 1, 0);
+
+                    // Активизируем генерацию координат текстуры
+                    Gl.glEnable(Gl.GL_TEXTURE_GEN_S);
+                    Gl.glEnable(Gl.GL_TEXTURE_GEN_T);
+                    // включаем режим текстурирования
+                    Gl.glEnable(Gl.GL_TEXTURE_2D);
+                    // включаем режим текстурирования, указывая идентификатор mGlTextureObject
+                    Gl.glBindTexture(Gl.GL_TEXTURE_2D, mGlTextureObject);
+                    Gl.glTexGeni(Gl.GL_S, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_SPHERE_MAP); // GL_OBJECT_LINEAR, GL_EYE_LINEAR
+                    Gl.glTexGeni(Gl.GL_T, Gl.GL_TEXTURE_GEN_MODE, Gl.GL_SPHERE_MAP);
+                    showSolid();
+                   // Gl.glDisable(Gl.GL_TEXTURE_GEN_S);
+                    //Gl.glDisable(Gl.GL_TEXTURE_GEN_T);
+                    //Gl.glDisable(Gl.GL_TEXTURE_2D);
+                    
+                    //Gl.glDeleteTextures(1, ref mGlTextureObject);
+                    
+                    Gl.glPopMatrix();
+                    Gl.glFlush();
+                    AnT.Invalidate();
+                }
                 
+            }
 
-                //// Модель освещенности с одним источником цвета
-                //float[] light_position = { 10, 10, -30, 0 }; // Координаты источника света
-                //float[] lghtClr = { 1, 1, 1, 0 }; // Источник излучает белый цвет
-                //float[] mtClr = { 0, 1, 0, 0 }; // Материал зеленого цвета
-                //Gl.glPolygonMode(Gl.GL_FRONT, Gl.GL_FILL); // Заливка полигонов
-                //Gl.glShadeModel(Gl.GL_SMOOTH); // Вывод с интерполяцией цветов
-                //Gl.glEnable(Gl.GL_LIGHTING); // Будем рассчитывать освещенность
-                //Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_POSITION, light_position);
-                //Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_AMBIENT, lghtClr); // Рассеивание
-                //Gl.glEnable(Gl.GL_LIGHT0); // Включаем в уравнение освещенности источник GL_LIGHT0
-                //// Диффузионная компонента цвета материала
-                //Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, mtClr);
-                //// Выводим тонированный glut-примитив
-                //showSolid();
-                //Gl.glDisable(Gl.GL_LIGHTING); // Будем рассчитывать освещенность
-
-                //Gl.glPopMatrix();
-                //Gl.glFlush();
-                //AnT.Invalidate();
-            
         }
+
+
 
         /// <summary>
         /// Поворот и перемещение
@@ -371,10 +414,9 @@ namespace Lb6Paint
         /// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
         {
-            RenderTimer.Stop();
             Glut.glutInit();
             Glut.glutInitDisplayMode(Glut.GLUT_RGB | Glut.GLUT_DOUBLE | Glut.GLUT_DEPTH);
-            Gl.glClearColor(255, 255, 255, 1);
+            Gl.glClearColor(1, 1, 1, 1);
             // установка порта вывода в соответствии с размерами элемента anT
             Gl.glViewport(0, 0, AnT.Width, AnT.Height);
             // настройка проекции
@@ -390,6 +432,11 @@ namespace Lb6Paint
             // инициализация библиотеки openIL
             Il.ilInit();
             Il.ilEnable(Il.IL_ORIGIN_SET);
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+            groupBox2.Visible = true;
         }
     }
 }
