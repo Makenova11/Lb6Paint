@@ -120,7 +120,7 @@ namespace Lb6Paint
                 float[] lghtClr = { Color.R, Color.G, Color.B, 1 }; // Источник излучает белый цвет 
                 float[] mtClr = { 1, 1, 1, 0 }; // Цвет излучения сферы на которую падает цвет
 
-                if (radioButton4.Checked)
+                if (radioButton4.Checked)//свет
                 {
                     Gl.glPolygonMode(Gl.GL_FRONT, Gl.GL_FILL); // Заливка полигонов
                     Gl.glShadeModel(Gl.GL_SMOOTH); // Вывод с интерполяцией цветов
@@ -137,7 +137,7 @@ namespace Lb6Paint
                     AnT.Invalidate();
                     Gl.glDisable(Gl.GL_LIGHT0);
                 }
-                else if (radioButton5.Checked)
+                else if (radioButton5.Checked)//прозрачность
                 {
                     Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
                     //Gl.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
@@ -434,9 +434,19 @@ namespace Lb6Paint
             Il.ilEnable(Il.IL_ORIGIN_SET);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
             groupBox2.Visible = true;
+        }
+
+        private void radioButton5_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
