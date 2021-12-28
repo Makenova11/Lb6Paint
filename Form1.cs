@@ -67,9 +67,6 @@ namespace Lb6Paint
             // инициализация библиотеки openIL
             Il.ilInit();
             Il.ilEnable(Il.IL_ORIGIN_SET);
-
-            
-
         }
 
         private void showSolid()
@@ -137,46 +134,10 @@ namespace Lb6Paint
                     AnT.Invalidate();
                     Gl.glDisable(Gl.GL_LIGHT0);
                 }
-                else if (radioButton5.Checked)//прозрачность
-                {
-                    Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
-                    //Gl.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-                    Gl.glLoadIdentity();
-                    Gl.glColor3f(Color.R, Color.G, Color.B);
-                    // масштаб
-                    Gl.glScalef(x_scale, y_scale, z_scale);
-                    Gl.glPushMatrix();
-                    Gl.glTranslated(0, 0, -6);
-                    // перемещаем камеру для более хорошего обзора объекта
-                    Gl.glTranslated(x_tr, y_tr, z_tr);
-                    Gl.glRotated(angle, 1, 1, 0);
-                    //// рисуем сферу с помощью библиотеки FreeGLUT
-                    //Glut.glutSolidSphere(0.7, 30, 30);
-
-                    float[] fogColor = new float[4] { 0.5f, 0.5f, 0.5f, 1.0f }; // Цвет тумана
-
-                    Gl.glEnable(Gl.GL_BLEND); // Включает туман (GL_FOG)
-                    Gl.glBlendFunc(Gl.GL_SRC_ALPHA, Gl.GL_ONE_MINUS_SRC_ALPHA);
-                    Gl.glEnable(Gl.GL_ALPHA_TEST);
-                    Gl.glColor3f(1, 1, 1);
-                    Glut.glutSolidSphere(3, 30, 30);
-                    Gl.glAlphaFunc(Gl.GL_GREATER, (float)0.3);
-                    Gl.glDisable(Gl.GL_BLEND);
-                    // Выводим тонированный glut-примитив
-
-                    Gl.glPopMatrix();
-                    Gl.glFlush();
-                    AnT.Invalidate();
-                }
-                
-                
 
                 Gl.glPopMatrix();
                 Gl.glFlush();
                 AnT.Invalidate();
-             
-
-
             }
             else if (radioButton3.Checked)//texture
             {
@@ -402,38 +363,6 @@ namespace Lb6Paint
             }
         }
 
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        /// <summary>
-        /// Обновить
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Glut.glutInit();
-            Glut.glutInitDisplayMode(Glut.GLUT_RGB | Glut.GLUT_DOUBLE | Glut.GLUT_DEPTH);
-            Gl.glClearColor(1, 1, 1, 1);
-            // установка порта вывода в соответствии с размерами элемента anT
-            Gl.glViewport(0, 0, AnT.Width, AnT.Height);
-            // настройка проекции
-            Gl.glMatrixMode(Gl.GL_PROJECTION);
-            Gl.glLoadIdentity();
-            Glu.gluPerspective(45, (float)AnT.Width / (float)AnT.Height, 0.1, 200);
-            Gl.glMatrixMode(Gl.GL_MODELVIEW);
-            Gl.glLoadIdentity();
-            // настройка параметров OpenGL для визуализации
-            Gl.glEnable(Gl.GL_DEPTH_TEST);
-            // начало визуализации (активируем таймер)
-            RenderTimer.Start();
-            // инициализация библиотеки openIL
-            Il.ilInit();
-            Il.ilEnable(Il.IL_ORIGIN_SET);
-        }
-
         /// <summary>
         /// 
         /// </summary>
@@ -444,9 +373,5 @@ namespace Lb6Paint
             groupBox2.Visible = true;
         }
 
-        private void radioButton5_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }
